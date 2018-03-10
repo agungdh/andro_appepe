@@ -50,17 +50,4 @@
         android:textSize="35sp"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/login"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/login"
-        android:layout_marginEnd="23dp"
-        android:layout_marginRight="23dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
-
 </RelativeLayout>
