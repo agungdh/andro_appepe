@@ -55,7 +55,15 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void cekLogin(final String username, final String password) throws UnsupportedEncodingException, JSONException {
-                apiAmbilData();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String alamat = "https://apps.agungdh.com/api_mahasiswa/";
+
+                        String respon = apiAmbilDataGet(alamat);
+                        Log.d("OKHTTP", "Respon = " + respon);
+                    }
+                }).start();
 
 //                login = 1;
 //                keMenuUtama();
@@ -74,26 +82,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void apiAmbilData() {
+    public String apiAmbilDataGet(String url) {
+        String respond = null;
         Log.d("OKHTTP", "Melakukan panggilan GET");
-        String alamat = "https://apps.agungdh.com/api_mahasiswa/";
 
         OkHttpClient client = new OkHttpClient();
         Log.d("OKHTTP", "client okhttp terbentuk");
 
         Request permohonan = new Request.Builder()
-                .url(alamat)
+                .url(url)
                 .build();
         Log.d("OKHTTP", "membuat permohonan selesai");
 
         try {
             Response respon = client.newCall(permohonan).execute();
             Log.d("OKHTTP", "mengambil respon");
-            Log.d("OKHTTP", respon.body().toString());
-        } catch (IOException e) {
+            respond = respon.body().string();
+        } catch (Exception e) {
             Log.d("OKHTTP", "ada error gan... dibwah");
             e.printStackTrace();
         }
+
+        return respond;
     }
 
 }
