@@ -1,5 +1,6 @@
 package com.agungdh.appepe;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -32,6 +34,8 @@ public class MenuUtama extends AppCompatActivity {
     static final int REQUEST_VIDEO_CAPTURE = 2;
     ApiClient ApiClient = new ApiClient();
     Bitmap bitmap;
+    Uri lokasiVideo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +80,7 @@ public class MenuUtama extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             bitmap = (Bitmap) data.getExtras().get("data");
             tFoto.setImageBitmap(bitmap);
-            cinta();
+            upFoto();
         }
 
         try {
@@ -84,7 +88,10 @@ public class MenuUtama extends AppCompatActivity {
                 Uri uVideo = data.getData();
                 tVidio.setMediaController(new MediaController(this));
                 tVidio.setVideoURI(uVideo);
+                lokasiVideo = uVideo;
+                Log.d("INFO BRO", "Lokasi Video = " + uVideo);
                 Log.d("INFO BRO", "Lokasi Video = " + uVideo.getPath());
+                upVideo();
 //                tVidio.start();
             }
         } catch (Exception e) {
@@ -93,7 +100,7 @@ public class MenuUtama extends AppCompatActivity {
 
     }
 
-    public void cinta() {
+    public void upFoto() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Log.d("poto", "awal run");
@@ -111,11 +118,31 @@ public class MenuUtama extends AppCompatActivity {
         doUploadFile(url, finalFile);
     }
 
+    public void upVideo() {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        Log.d("poto", "awal run");
+
+        // CALL THIS METHOD TO GET THE ACTUAL PATH
+        File finalFile = new File(getRealPathFromURI(lokasiVideo));
+
+        Log.d("poto", "lokasifile: " + finalFile.toString());
+
+        String url= "http://10.42.0.1/api_appepe/test/test";
+
+        doUploadFile(url, finalFile);
+    }
+
     public void doUploadFile(String url, File finalFile) {
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        int index = finalFile.getName().lastIndexOf('.')+1;
+        String ext = finalFile.getName().substring(index).toLowerCase();
+        String type = mime.getMimeTypeFromExtension(ext);
+
         RequestBody body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", finalFile.getName(),
-                        RequestBody.create(MediaType.parse("image/jpeg"), finalFile))
+                        RequestBody.create(MediaType.parse(type), finalFile))
                 .addFormDataPart("pesan", "ade agung")
                 .build();
         Log.d("OKHTTP", "membuat form data." +
