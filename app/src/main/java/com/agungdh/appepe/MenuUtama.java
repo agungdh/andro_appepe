@@ -78,6 +78,7 @@ public class MenuUtama extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            //auk dah
             bitmap = (Bitmap) data.getExtras().get("data");
             tFoto.setImageBitmap(bitmap);
             upFoto();
