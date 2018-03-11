@@ -61,6 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/vidio"
         android:layout_centerHorizontal="true"
+        android:adjustViewBounds="false"
         app:srcCompat="@drawable/ic_launcher_background" />
 
     <VideoView

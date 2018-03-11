@@ -1,5 +1,6 @@
 package com.agungdh.appepe;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     ApiClient ApiClient = new ApiClient();
     MainActivity activity;
-    String passwordHash;
+    String flashData;
     int login = 0;
 
     @Override
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void cekLogin(final String username, final String password) throws UnsupportedEncodingException, JSONException {
-                new Thread(new Runnable() {
+                new  Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -101,12 +104,24 @@ public class MainActivity extends AppCompatActivity {
 
                         } catch (Exception e) {
                             Log.d("OKHTTP", "Ada Error");
+                            Toast.makeText(getBaseContext(),"Iam inside thread",Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     }
                 }).start();
             }
         });
+    }
+
+    public void Alert(String pesan) {
+        Toast.makeText(getApplicationContext(), pesan, Toast.LENGTH_SHORT).show();
+    }
+
+    public void AlertFlash() {
+        if (this.flashData != null) {
+            Toast.makeText(getApplicationContext(), this.flashData, Toast.LENGTH_SHORT).show();
+        }
+        this.flashData = null;
     }
 
     public void keMenuUtama() {
