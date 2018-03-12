@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             //hash
-                            String url= "http://10.42.0.1/api_appepe/login/hash";
+                            String url= "http://10.42.0.1/api_appepe/api/login/hash";
 
                             RequestBody body = new FormBody.Builder()
                                     .add("password", password)
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("OKHTTP", "Password ter hash = " + hashPassword);
 
                             //login
-                            url = "http://10.42.0.1/api_appepe/login";
+                            url = "http://10.42.0.1/api_appepe/api/login";
 
                             body = new FormBody.Builder()
                                     .add("username", username)

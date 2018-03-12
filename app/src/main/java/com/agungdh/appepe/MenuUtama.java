@@ -114,7 +114,7 @@ public class MenuUtama extends AppCompatActivity {
         Log.d("poto", "tempuri: " + tempUri.toString());
         Log.d("poto", "lokasifile: " + finalFile.toString());
 
-        String url= "http://10.42.0.1/api_appepe/test/test";
+        String url= "http://10.42.0.1/api_appepe/api/test/test";
 
         doUploadFile(url, finalFile);
     }
@@ -129,7 +129,7 @@ public class MenuUtama extends AppCompatActivity {
 
         Log.d("poto", "lokasifile: " + finalFile.toString());
 
-        String url= "http://10.42.0.1/api_appepe/test/test";
+        String url= "http://10.42.0.1/api_appepe/api/test/test";
 
         doUploadFile(url, finalFile);
     }
