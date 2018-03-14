@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +24,9 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import okhttp3.FormBody;
 import okhttp3.MediaType;
@@ -52,8 +57,20 @@ public class MenuUtama extends AppCompatActivity {
             }
 
             private void cFoto() {
-                Intent myIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(myIntent, REQUEST_IMAGE_CAPTURE);
+                File foto = null;
+                try{
+                    foto = createImageFile();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+
+                if(foto != null ){
+//                    Uri fotoURI = FileProvider.getUriForFile(getApplicationContext(),"com.example.android.fileprovider",foto);
+                    Intent myIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    myIntent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(foto));
+                    startActivityForResult(myIntent, REQUEST_IMAGE_CAPTURE);
+                }
+
             }
         });
 
@@ -70,6 +87,24 @@ public class MenuUtama extends AppCompatActivity {
         });
     }
 
+    String mCurrentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         ImageView tFoto = (ImageView) findViewById(R.id.tFoto);
@@ -79,9 +114,12 @@ public class MenuUtama extends AppCompatActivity {
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             //auk dah
-            bitmap = (Bitmap) data.getExtras().get("data");
-            tFoto.setImageBitmap(bitmap);
+//            bitmap = (Bitmap) data.getExtras().get("data");
+
+//            tFoto.setImageBitmap(bitmap);
+            tFoto.setImageURI(Uri.parse(mCurrentPhotoPath));
             upFoto();
+
         }
 
         try {
@@ -106,12 +144,12 @@ public class MenuUtama extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         Log.d("poto", "awal run");
         // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-        Uri tempUri = getImageUri(getApplicationContext(), bitmap);
+//        Uri tempUri = getImageUri(getApplicationContext(), bitmap);
 
         // CALL THIS METHOD TO GET THE ACTUAL PATH
-        File finalFile = new File(getRealPathFromURI(tempUri));
-
-        Log.d("poto", "tempuri: " + tempUri.toString());
+//        File finalFile = new File(getRealPathFromURI(tempUri));
+        File finalFile = new File(mCurrentPhotoPath);
+//        Log.d("poto", "tempuri: " + tempUri.toString());
         Log.d("poto", "lokasifile: " + finalFile.toString());
 
         String url= "http://10.42.0.1/api_appepe/api/test/test";
@@ -146,6 +184,7 @@ public class MenuUtama extends AppCompatActivity {
                         RequestBody.create(MediaType.parse(type), finalFile))
                 .addFormDataPart("pesan", "ade agung")
                 .build();
+//        finalFile.getTotalSpace();
         Log.d("OKHTTP", "membuat form data." +
                 "\nNama File = " + finalFile.getName() +
                 "\nLokasi File = " + finalFile.getAbsoluteFile());
